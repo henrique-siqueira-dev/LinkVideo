@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,14 @@ class AppServiceProvider extends ServiceProvider
         if (str_starts_with((string) config('app.url'), 'https://')) {
             URL::forceScheme('https');
             $this->app['request']->server->set('HTTPS', 'on');
+        }
+
+        // Docker: o nginx entrega o arquivo (com Range) e o PHP fica livre na hora.
+        // Os cabeçalhos são definidos aqui, nunca lidos do visitante.
+        if ($mapping = config('linkvideo.x_accel_mapping')) {
+            BinaryFileResponse::trustXSendfileTypeHeader();
+            $this->app['request']->headers->set('X-Sendfile-Type', 'X-Accel-Redirect');
+            $this->app['request']->headers->set('X-Accel-Mapping', $mapping);
         }
     }
 }

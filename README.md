@@ -32,7 +32,25 @@ O seeder cria os masters com a senha de `MASTER_PASSWORD` do `.env`.
 
 > O Apache do XAMPP roda como `daemon` e não consegue gravar em `storage/`; por isso o `artisan serve`.
 
-## Publicar online
+## Publicar com Docker (Coolify)
+
+Arquivos: `Dockerfile` (nginx + PHP-FPM 8.4, imagem `serversideup/php`), `docker-compose.yml` (app + MySQL 8.4) e `docker/nginx/linkvideo-media.conf`.
+
+1. No Coolify: **+ New Resource → Public/Private Repository**, aponte para este repositório e escolha **Build Pack: Docker Compose** (arquivo `docker-compose.yml`).
+2. Em **Environment Variables**, preencha:
+   - `APP_KEY`: gere com `php artisan key:generate --show` (copie o `base64:...` inteiro);
+   - `MASTER_PASSWORD`: senha inicial dos dois masters;
+   - as senhas do MySQL (`SERVICE_PASSWORD_MYSQL`, `SERVICE_PASSWORD_MYSQLROOT`) e o usuário (`SERVICE_USER_MYSQL`) o Coolify gera sozinho.
+3. Em **Domains** do serviço `app`, coloque o domínio com `https://` (ex.: `https://linkvideo.seudominio.com.br`). Ele vira o `APP_URL`.
+4. **Deploy**. A cada deploy o container roda as migrations e gera os caches sozinho.
+5. Só na primeira vez, no **Terminal** do serviço `app` no Coolify: `php artisan db:seed --force` (cria os masters). Depois disso pode apagar `MASTER_PASSWORD`.
+
+- **Vídeos e capas** ficam no volume `linkvideo-storage` (`storage/app`); o banco, em `linkvideo-mysql`. Não apague os volumes e inclua os dois no backup.
+- O PHP confere login/assinatura e o **nginx entrega o arquivo** (`X-Accel-Redirect`, variável `MEDIA_X_ACCEL_MAPPING`): o vídeo não prende um processo PHP enquanto toca.
+- **Cloudflare com proxy (nuvem laranja)** na frente: o IP visto passa a ser o da Cloudflare, e o link público do filme (preso ao IP) pode falhar. Use o DNS sem proxy (nuvem cinza).
+- **Trazer os dados da hospedagem antiga**: importe o dump do MySQL no serviço `mysql` e copie `storage/app/private/` (videos, covers) para o volume `linkvideo-storage`. O `APP_KEY` pode ser o mesmo de antes ou novo (só invalida sessões e links assinados já abertos).
+
+## Publicar online (hospedagem compartilhada, FTP)
 
 O sistema abre em `https://www.agenciajohncode.com.br/sistemas/linkvideo`. O projeto fica **fora** do `www`; só a parte pública fica acessível. Nesta hospedagem o nginx entrega direto qualquer arquivo que esteja dentro do `www`, então **nunca envie a pasta do projeto inteira para lá**.
 

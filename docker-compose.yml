@@ -1,0 +1,73 @@
+# linkVideo no Coolify (Build Pack: Docker Compose).
+# As variáveis ${...} aparecem na aba "Environment Variables" do Coolify.
+# Obrigatória: APP_KEY. As senhas do MySQL são geradas pelo próprio Coolify.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      # Domínio do app; o Coolify encaminha para a porta 8080 do container.
+      - SERVICE_FQDN_APP_8080
+      - APP_URL=${SERVICE_FQDN_APP}
+      - APP_NAME=linkVideo
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_KEY=${APP_KEY:?}
+      - APP_TIMEZONE=America/Sao_Paulo
+      - APP_LOCALE=pt_BR
+      - APP_FALLBACK_LOCALE=en
+      - APP_FAKER_LOCALE=pt_BR
+      - LOG_CHANNEL=stderr
+      - LOG_LEVEL=${LOG_LEVEL:-error}
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-linkvideo}
+      - DB_USERNAME=${SERVICE_USER_MYSQL}
+      - DB_PASSWORD=${SERVICE_PASSWORD_MYSQL}
+      - SESSION_DRIVER=database
+      - SESSION_LIFETIME=120
+      - SESSION_PATH=/
+      - SESSION_SECURE_COOKIE=true
+      - CACHE_STORE=database
+      - QUEUE_CONNECTION=database
+      - FILESYSTEM_DISK=local
+      - MAIL_MAILER=log
+      # Só usada no primeiro "php artisan db:seed --force" (cria os masters).
+      - MASTER_PASSWORD=${MASTER_PASSWORD:-}
+      - VIDEO_MAX_MB=${VIDEO_MAX_MB:-4096}
+      - VIDEO_BATCH_MAX_MB=${VIDEO_BATCH_MAX_MB:-4096}
+      - COVER_MAX_KB=${COVER_MAX_KB:-5120}
+      - VIDEO_CHUNK_MB=${VIDEO_CHUNK_MB:-8}
+    volumes:
+      # Vídeos, capas e envios em andamento. NÃO apague este volume.
+      - linkvideo-storage:/var/www/html/storage/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE:-linkvideo}
+      - MYSQL_USER=${SERVICE_USER_MYSQL}
+      - MYSQL_PASSWORD=${SERVICE_PASSWORD_MYSQL}
+      - MYSQL_ROOT_PASSWORD=${SERVICE_PASSWORD_MYSQLROOT}
+    volumes:
+      - linkvideo-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  linkvideo-storage:
+  linkvideo-mysql:

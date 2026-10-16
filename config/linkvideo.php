@@ -13,6 +13,12 @@ return [
 
     'master_password' => env('MASTER_PASSWORD'),
 
+    /*
+    | No Docker o nginx entrega vídeos e capas (X-Accel-Redirect) depois que o PHP
+    | confere o acesso. Formato "pasta-no-disco/=/local-interno/". Vazio: o PHP entrega.
+    */
+    'x_accel_mapping' => env('MEDIA_X_ACCEL_MAPPING'),
+
     'uploads' => [
         // Tamanho máximo do vídeo, em MB.
         'video_max_mb' => (int) env('VIDEO_MAX_MB', 4096),
