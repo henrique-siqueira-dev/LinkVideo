@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>linkVideo — Manual de uso</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 18mm; @bottom-right { content: counter(page); font: 9pt -apple-system, "Segoe UI", sans-serif; color: #9a9aa5; } @bottom-left { content: "linkVideo · Manual de uso"; font: 9pt -apple-system, "Segoe UI", sans-serif; color: #9a9aa5; } }
+  @page :first { margin: 0; @bottom-right { content: none; } @bottom-left { content: none; } }
+  @page credits { margin: 0; @bottom-right { content: none; } @bottom-left { content: none; } }
+
+  :root { --brand: #e11d48; --brand-soft: #fff1f3; --ink: #15151c; --ink-2: #4b4b57; --muted: #7c7c88; --line: #e6e6ea; --dark: #0b0b10; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font: 10.5pt/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: var(--ink); background: #fff; }
+  h1, h2, h3 { line-height: 1.2; margin: 0; }
+  p { margin: 0 0 8px; }
+  strong { color: var(--ink); }
+  code { font: 9.5pt ui-monospace, Menlo, monospace; background: #f3f3f6; padding: 1px 5px; border-radius: 4px; }
+
+  /* Capa */
+  .cover { height: 297mm; width: 210mm; background: radial-gradient(120% 70% at 50% 0%, #4c0519 0%, #0b0b10 62%); color: #fff; display: flex; flex-direction: column; justify-content: space-between; padding: 26mm 22mm 20mm; break-after: page; }
+  .logo { display: inline-flex; align-items: center; gap: 12px; font-weight: 800; font-size: 22pt; letter-spacing: -0.02em; }
+  .logo .mark { width: 46px; height: 46px; border-radius: 13px; background: linear-gradient(135deg, #f43f5e, #be123c); display: grid; place-items: center; }
+  .logo .mark svg { width: 20px; height: 20px; margin-left: 3px; }
+  .logo .v { color: #f43f5e; }
+  .cover h1 { font-size: 34pt; font-weight: 800; letter-spacing: -0.03em; margin-top: 18mm; }
+  .cover .lead { font-size: 13pt; color: #d4d4dc; max-width: 130mm; margin-top: 6mm; }
+  .cover .shot { margin-top: 10mm; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.14); }
+  .cover .shot img { display: block; width: 100%; }
+  .cover footer { display: flex; justify-content: space-between; color: #9a9aa8; font-size: 9.5pt; border-top: 1px solid rgba(255,255,255,.12); padding-top: 5mm; }
+
+  /* Sumário */
+  .toc { break-after: page; }
+  .toc h2 { font-size: 20pt; margin-bottom: 6mm; }
+  .toc ol { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 12mm; }
+  .toc li { padding: 7px 0; border-bottom: 1px solid var(--line); break-inside: avoid; display: flex; gap: 10px; }
+  .toc li span.n { color: var(--brand); font-weight: 700; width: 22px; }
+  .flow { margin-top: 10mm; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .flow div { background: #f7f7f9; border: 1px solid var(--line); border-radius: 10px; padding: 10px; font-size: 9pt; color: var(--ink-2); }
+  .flow b { display: block; color: var(--brand); font-size: 15pt; margin-bottom: 4px; }
+
+  /* Seções */
+  section { margin-bottom: 9mm; }
+  section.first { break-before: page; }
+  section.page { break-before: page; }
+  .sec-head { break-after: avoid; display: flex; align-items: center; gap: 10px; margin-bottom: 4mm; padding-bottom: 3mm; border-bottom: 2px solid var(--brand); }
+  .sec-head .num { width: 28px; height: 28px; border-radius: 8px; background: var(--brand); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 11pt; flex: none; }
+  .sec-head h2 { font-size: 17pt; letter-spacing: -0.01em; }
+  h3 { font-size: 12pt; margin: 5mm 0 2mm; break-after: avoid; }
+  ol.steps { padding-left: 18px; margin: 0 0 8px; }
+  ol.steps li { margin-bottom: 4px; }
+  ul { padding-left: 18px; margin: 0 0 8px; }
+  li { margin-bottom: 3px; }
+
+  figure { margin: 4mm 0 5mm; break-inside: avoid; }
+  figure img { display: block; width: 100%; border-radius: 8px; border: 1px solid #cfcfd6; }
+  figure.wide { width: 150mm; margin-left: auto; margin-right: auto; }
+  figcaption { font-size: 8.8pt; color: var(--muted); margin-top: 2mm; text-align: center; }
+  .phones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; align-items: start; break-inside: avoid; }
+  .phones.two { grid-template-columns: repeat(2, 54mm); justify-content: center; }
+  .phones figure { margin: 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; align-items: start; }
+
+  .box { border-radius: 10px; padding: 10px 12px; margin: 4mm 0; break-inside: avoid; font-size: 10pt; }
+  .box.tip { background: #eef6ff; border: 1px solid #cfe3fb; }
+  .box.warn { background: #fff8e8; border: 1px solid #f5dfa6; }
+  .box.rule { background: var(--brand-soft); border: 1px solid #fbcbd5; }
+  .box b.t { display: block; margin-bottom: 3px; }
+  table.simple { width: 100%; border-collapse: collapse; font-size: 9.8pt; margin: 3mm 0; break-inside: avoid; }
+  table.simple th, table.simple td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.simple th { background: #f7f7f9; font-size: 8.8pt; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .faq dt { font-weight: 700; margin-top: 4mm; }
+  .faq dd { margin: 1mm 0 0; color: var(--ink-2); }
+
+  /* Créditos */
+  .credits { page: credits; break-before: page; height: 297mm; width: 210mm; background: radial-gradient(110% 60% at 50% 100%, #4c0519 0%, #0b0b10 60%); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20mm; }
+  .credits .by { margin-top: 16mm; font-size: 10pt; letter-spacing: .25em; text-transform: uppercase; color: #9a9aa8; }
+  .credits .jc { margin-top: 4mm; font-size: 30pt; font-weight: 800; letter-spacing: -0.02em; }
+  .credits .jc span { color: #f43f5e; }
+  .credits .site { margin-top: 4mm; font-size: 12pt; color: #d4d4dc; }
+  .credits .note { margin-top: 18mm; max-width: 120mm; color: #9a9aa8; font-size: 9.5pt; }
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="cover">
+  <div>
+    <div class="logo"><span class="mark"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.8v14.4a1 1 0 0 0 1.52.85l11.5-7.2a1 1 0 0 0 0-1.7L8.52 3.95A1 1 0 0 0 7 4.8Z"/></svg></span><span>link<span class="v">Video</span></span></div>
+    <h1>Manual de uso</h1>
+    <p class="lead">Repositório de filmes com link fixo: cadastre vários filmes de uma vez, copie o link de cada um para a resposta automática do WhatsApp e acompanhe as visualizações.</p>
+    <div class="shot"><img src="img/02-inicio.jpg" alt=""></div>
+  </div>
+  <footer><span>Versão 2 · outubro de 2026</span><span>Desenvolvido por John Code</span></footer>
+</div>
+
+<!-- SUMÁRIO -->
+<div class="toc">
+  <h2>Sumário</h2>
+  <ol>
+    <li><span class="n">1</span> Como o linkVideo funciona</li>
+    <li><span class="n">2</span> Entrar no painel</li>
+    <li><span class="n">3</span> Menu lateral</li>
+    <li><span class="n">4</span> Início: visualizações e biblioteca</li>
+    <li><span class="n">5</span> Cadastrar filmes (fila de cadastro)</li>
+    <li><span class="n">6</span> Links fixos</li>
+    <li><span class="n">7</span> Vídeos: gerenciar e editar</li>
+    <li><span class="n">8</span> O que quem recebe o link vê</li>
+    <li><span class="n">9</span> Valor de venda e olhinho</li>
+    <li><span class="n">10</span> Usuários</li>
+    <li><span class="n">11</span> Atividades</li>
+    <li><span class="n">12</span> Configurações</li>
+    <li><span class="n">13</span> Dúvidas frequentes</li>
+  </ol>
+
+  <div class="flow">
+    <div><b>1</b>Preencha um ou mais filmes na fila</div>
+    <div><b>2</b>Clique em “Carregar todos os filmes”</div>
+    <div><b>3</b>Copie os links fixos</div>
+    <div><b>4</b>Coloque na resposta automática do WhatsApp</div>
+    <div><b>5</b>Acompanhe as visualizações</div>
+  </div>
+</div>
+
+<!-- 1 -->
+<section>
+  <div class="sec-head"><span class="num">1</span><h2>Como o linkVideo funciona</h2></div>
+  <p>O linkVideo é um painel para guardar filmes e entregar cada um por meio de um <strong>link fixo</strong>. Só os usuários do painel (masters) fazem login. Quem recebe o link não precisa de conta: toca e assiste.</p>
+  <ul>
+    <li>Cada filme cadastrado ganha <strong>um link fixo</strong>, por exemplo <code>…/linkvideo/filme/noite-no-porto</code>. Ele <strong>nunca muda</strong>, mesmo que você edite o título, troque a capa ou envie outro arquivo de vídeo. Por isso pode ir direto para a resposta automática do WhatsApp.</li>
+    <li>Quem abre o link vê a capa com um <strong>botão grande de assistir</strong>. Um toque e o filme começa <strong>com som e em tela cheia</strong>, no celular ou no computador. O player <strong>não tem opção de baixar</strong>.</li>
+    <li>O player <strong>se ajusta ao formato</strong> do vídeo: gravado em pé (celular) ou deitado.</li>
+    <li>Dá para cadastrar <strong>vários filmes de uma vez</strong> e receber todos os links no final.</li>
+    <li>O <strong>Início</strong> mostra quantas pessoas abriram os links, por dia e por filme — <strong>cada IP conta uma vez por filme</strong>.</li>
+  </ul>
+  <div class="box warn"><b class="t">Link fixo = qualquer pessoa com o link assiste</b>O link não fica preso a um aparelho. Se alguém repassar, a outra pessoa também consegue assistir. Gravação de tela também não pode ser impedida por nenhum site.</div>
+</section>
+
+<!-- 2 -->
+<section>
+  <div class="sec-head"><span class="num">2</span><h2>Entrar no painel</h2></div>
+  <div class="grid2">
+    <div>
+      <ol class="steps">
+        <li>Acesse <code>www.agenciajohncode.com.br/sistemas/linkvideo</code>.</li>
+        <li>Digite seu <strong>e-mail</strong> e sua <strong>senha</strong>.</li>
+        <li>Marque <strong>Manter conectado</strong> se o computador for só seu.</li>
+        <li>Clique em <strong>Entrar</strong>.</li>
+      </ol>
+      <p>Para sair, use o ícone de saída no rodapé do menu lateral.</p>
+      <div class="box warn"><b class="t">Esqueceu a senha?</b>Peça a outro usuário master para definir uma nova em <strong>Configurações → Usuários → Editar</strong>.</div>
+      <div class="box tip"><b class="t">Segurança</b>Depois de 5 senhas erradas seguidas o login fica bloqueado por 1 minuto. Toda tentativa errada fica registrada em <strong>Atividades</strong>.</div>
+    </div>
+    <figure><img src="img/01-login.jpg" alt=""><figcaption>Tela de login</figcaption></figure>
+  </div>
+</section>
+
+<!-- 3 -->
+<section>
+  <div class="sec-head"><span class="num">3</span><h2>Menu lateral</h2></div>
+  <table class="simple">
+    <tr><th style="width:34mm">Opção</th><th>Para que serve</th></tr>
+    <tr><td><strong>Novo vídeo</strong></td><td>Abre a fila de cadastro, onde você coloca um ou vários filmes.</td></tr>
+    <tr><td><strong>Início</strong></td><td>Visualizações dos links, gráficos e a biblioteca com todos os filmes.</td></tr>
+    <tr><td><strong>Vídeos</strong></td><td>Lista para gerenciar: copiar o link fixo, prévia, editar e excluir.</td></tr>
+    <tr><td><strong>Atividades</strong></td><td>Registro de tudo o que cada usuário fez: quem, o quê, quando, IP e aparelho.</td></tr>
+    <tr><td><strong>Configurações</strong></td><td>Tempo dos valores visíveis, sua conta e o acesso a <strong>Usuários</strong>.</td></tr>
+    <tr><td><strong>Rodapé</strong></td><td>Olhinho dos valores (mostrar/ocultar), sua conta e o botão de sair.</td></tr>
+  </table>
+  <div class="phones two">
+    <figure><img src="img/17-celular-inicio.jpg" alt=""><figcaption>No celular: o painel se adapta</figcaption></figure>
+    <figure><img src="img/18-celular-menu.jpg" alt=""><figcaption>Toque em ☰ para abrir o menu</figcaption></figure>
+  </div>
+</section>
+
+<!-- 4 -->
+<section>
+  <div class="sec-head"><span class="num">4</span><h2>Início: visualizações e biblioteca</h2></div>
+  <p>A primeira tela mostra quantas pessoas abriram os links fixos dos filmes:</p>
+  <ul>
+    <li><strong>Hoje</strong>, <strong>últimos 7 dias</strong>, <strong>últimos 30 dias</strong> e <strong>desde o início</strong>, além do total de <strong>vídeos</strong> e do espaço que eles ocupam no servidor.</li>
+    <li><strong>Visualizações por dia</strong>: os últimos 30 dias.</li>
+    <li><strong>Filmes mais assistidos</strong>: os 5 filmes com mais visualizações nos últimos 30 dias.</li>
+    <li>Passe o mouse nas barras para ver o número de cada dia. Em <strong>Ver tabela</strong> os mesmos números aparecem em lista.</li>
+  </ul>
+  <figure class="wide"><img src="img/02-inicio.jpg" alt=""><figcaption>Início com as visualizações</figcaption></figure>
+  <div class="box tip"><b class="t">O que conta como visualização</b>Cada <strong>pessoa</strong> que abre o link de um filme, identificada pelo <strong>IP</strong> (endereço da internet): o mesmo IP conta <strong>uma vez só por filme</strong>, mesmo que atualize a página ou volte outro dia. <strong>Não contam</strong>: a prévia que o WhatsApp gera quando o link é colado na conversa (e outros robôs) e as aberturas feitas por quem está logado no painel. Pessoas na mesma rede Wi-Fi podem aparecer como um IP só.</div>
+  <p>Logo abaixo dos gráficos fica a <strong>Biblioteca</strong>, com busca e filtros por tipo e classificação. Clique em <strong>Assistir</strong> para ver a prévia. Vídeos gravados em pé aparecem altos, com as informações ao lado.</p>
+  <figure class="wide"><img src="img/08-previa-vertical.jpg" alt=""><figcaption>Prévia de um vídeo gravado em pé, no computador</figcaption></figure>
+</section>
+
+<!-- 5 -->
+<section>
+  <div class="sec-head"><span class="num">5</span><h2>Cadastrar filmes (fila de cadastro)</h2></div>
+  <ol class="steps">
+    <li>Clique em <strong>Novo vídeo</strong>. Abre a fila com o <strong>Filme 1</strong>.</li>
+    <li>Preencha <strong>título</strong>, <strong>descrição</strong>, <strong>tipo</strong> (romance, drama, ação…), <strong>valor de venda</strong> e <strong>classificação indicativa</strong> (Livre, 10, 12, 14, 16 ou 18 anos). No valor, digite só os números: <code>4990</code> vira <strong>49,90</strong>.</li>
+    <li>Escolha a <strong>capa</strong> (JPG, PNG ou WEBP, até 5 MB; ideal em pé, 2:3, ex. 800×1200) e o <strong>arquivo de vídeo</strong>. Capas pesadas são reduzidas automaticamente para o link abrir rápido.</li>
+    <li>Para mais filmes, clique em <strong>+ Adicionar outro filme</strong>: aparece um novo bloco com os mesmos campos. <strong>Remover</strong> tira o filme da fila.</li>
+    <li>A barra no rodapé mostra quantos filmes estão na fila e o tamanho total. Clique em <strong>Carregar todos os filmes</strong>.</li>
+    <li>Os filmes sobem <strong>um de cada vez</strong>, cada um com a sua barra de progresso. <strong>Não feche a página</strong> enquanto carrega — o navegador avisa se você tentar.</li>
+    <li>No final aparece a lista com o <strong>link fixo de cada filme</strong> (veja a seção 6).</li>
+  </ol>
+  <figure class="wide"><img src="img/03-fila.jpg" alt=""><figcaption>Fila de cadastro com dois filmes</figcaption></figure>
+  <div class="box warn"><b class="t">Tamanho máximo por envio: 4 GB</b>O limite vale para a soma de todos os filmes da fila (cada vídeo também pode ter até 4 GB). Se passar, o aviso no rodapé fica vermelho e o botão é bloqueado: remova algum filme e carregue o restante numa segunda vez.</div>
+  <div class="box tip"><b class="t">Formato recomendado</b><strong>MP4 (H.264)</strong> toca em todos os navegadores. Aceita também MOV, WEBM, M4V e OGV. Vídeos de iPhone em HEVC podem não tocar no Chrome — exporte em H.264.</div>
+  <div class="box tip"><b class="t">Deu erro em um filme?</b>Os outros continuam normalmente. O filme com problema fica marcado como <strong>Corrigir</strong>, com a mensagem do que falta. Corrija e clique em carregar de novo: se o vídeo já tinha subido, ele não precisa subir outra vez.</div>
+</section>
+
+<!-- 6 -->
+<section>
+  <div class="sec-head"><span class="num">6</span><h2>Links fixos</h2></div>
+  <p>Assim que a fila termina, aparece o quadro verde <strong>“filmes carregados”</strong> com o link de cada filme:</p>
+  <ul>
+    <li><strong>Copiar</strong>: copia o link daquele filme.</li>
+    <li><strong>Copiar todos</strong>: copia a lista inteira, um filme por linha (<code>Título: link</code>), pronta para colar no robô ou numa conversa.</li>
+    <li><strong>Cadastrar mais filmes</strong>: limpa a fila para um novo envio.</li>
+  </ul>
+  <figure class="wide"><img src="img/04-fila-links.jpg" alt=""><figcaption>Links fixos prontos para copiar</figcaption></figure>
+  <h3>Como o link é formado</h3>
+  <ul>
+    <li>O link é criado a partir do título: <strong>Noite no Porto</strong> → <code>…/filme/noite-no-porto</code>. Se dois filmes tiverem o mesmo título, o segundo ganha <code>-2</code> no final.</li>
+    <li>Ele <strong>não muda</strong> ao editar título, descrição, capa, valor ou ao trocar o arquivo do vídeo. O link que já está no robô continua funcionando.</li>
+    <li>O link só para de funcionar se o filme for <strong>excluído</strong>.</li>
+    <li>Depois, a qualquer momento, o link de cada filme fica no botão <strong>Copiar link fixo</strong> da lista de Vídeos.</li>
+  </ul>
+  <div class="box rule"><b class="t">Links da versão anterior</b>Os links individuais de clientes da versão anterior do sistema foram <strong>desativados</strong>. Use sempre os links fixos dos filmes.</div>
+</section>
+
+<!-- 7 -->
+<section>
+  <div class="sec-head"><span class="num">7</span><h2>Vídeos: gerenciar e editar</h2></div>
+  <p>A lista mostra cada filme com a capa, o título, o <strong>espaço que ocupa no servidor</strong> (vídeo + capa) e o total de <strong>visualizações</strong>. Em telas grandes aparecem também tipo, duração e data de cadastro. No topo ficam a busca, os filtros e o espaço usado por todos os vídeos.</p>
+  <table class="simple">
+    <tr><th style="width:40mm">Botão</th><th>O que faz</th></tr>
+    <tr><td><strong>▶</strong></td><td>Prévia do filme dentro do painel.</td></tr>
+    <tr><td><strong>Copiar link fixo</strong></td><td>Copia o link do filme para colar no WhatsApp ou no robô.</td></tr>
+    <tr><td><strong>🔗</strong></td><td>Abre o link numa nova aba, do jeito que a pessoa vê (sem contar visualização).</td></tr>
+    <tr><td><strong>✏️ Editar</strong></td><td>Altera as informações, a capa ou o arquivo de vídeo. O link continua o mesmo.</td></tr>
+    <tr><td><strong>🗑️ Excluir</strong></td><td>Apaga o vídeo e a capa do servidor. O link do filme deixa de funcionar.</td></tr>
+  </table>
+  <figure class="wide"><img src="img/05-videos.jpg" alt=""><figcaption>Lista de vídeos</figcaption></figure>
+  <h3>Editar um filme</h3>
+  <p>Em <strong>Editar</strong> você muda título, descrição, tipo, valor, classificação e capa. Para trocar o vídeo por outra versão, envie o novo arquivo em <strong>Arquivo de vídeo</strong> e aguarde chegar a 100% antes de salvar. Com os valores ocultos, o campo de valor aparece como <em>“oculto · em branco mantém”</em>: deixe em branco para manter o valor atual.</p>
+  <figure class="wide"><img src="img/13-editar-video.jpg" alt=""><figcaption>Editar vídeo</figcaption></figure>
+</section>
+
+<!-- 8 -->
+<section>
+  <div class="sec-head"><span class="num">8</span><h2>O que quem recebe o link vê</h2></div>
+  <p>Não precisa de cadastro nem de senha. A tela abre rápido, já com a <strong>capa do filme</strong>, o logo, o título e um <strong>botão grande de play</strong> no meio (“Toque para assistir” no celular, “Clique para assistir” no computador). Enquanto a pessoa vê a capa, o vídeo já vai sendo carregado.</p>
+  <ol class="steps">
+    <li><strong>Um toque no botão</strong> (ou em qualquer lugar do player): o filme começa <strong>com som</strong> e em <strong>tela cheia</strong>. No celular Android, o vídeo deitado já gira a tela.</li>
+    <li>Aparecem os <strong>controles</strong>: pausa, volume, barra de tempo e sair da tela cheia. Se a internet engasgar, aparece <strong>“Carregando…”</strong>.</li>
+    <li>Fora da tela cheia, o <strong>vídeo em pé</strong> ocupa a altura da tela e o <strong>deitado</strong>, a largura; nas laterais aparece a capa desfocada. Abaixo do player ficam o título, o tipo, a classificação e a descrição.</li>
+  </ol>
+  <div class="box tip"><b class="t">Por que precisa de um toque?</b>Nenhum navegador deixa um site começar um vídeo com som ou abrir a tela cheia sozinho — vale para qualquer site. Por isso o botão: é um toque só, e o filme já começa com som e em tela cheia.</div>
+  <div class="box rule"><b class="t">Sem download</b>O player não tem botão de baixar, o clique direito é bloqueado e o endereço do arquivo de vídeo não abre fora da página do filme.</div>
+  <div class="phones">
+    <figure><img src="img/12-link-celular-vertical.jpg" alt=""><figcaption>1. Ao abrir: capa e botão</figcaption></figure>
+    <figure><img src="img/19-link-celular-tocando.jpg" alt=""><figcaption>2. Depois do toque: tela cheia, com som</figcaption></figure>
+    <figure><img src="img/11-link-celular-horizontal.jpg" alt=""><figcaption>Vídeo deitado no celular</figcaption></figure>
+  </div>
+  <figure class="wide"><img src="img/09-link-pc.jpg" alt=""><figcaption>No computador: “Clique para assistir”</figcaption></figure>
+</section>
+
+<!-- 9 -->
+<section class="page">
+  <div class="sec-head"><span class="num">9</span><h2>Valor de venda e olhinho</h2></div>
+  <p>O <strong>valor de venda</strong> é informado no cadastro e serve para o seu controle: ele <strong>não aparece</strong> para quem abre o link nem nas listas. Por segurança, fica escondido também na tela de edição até você digitar a senha.</p>
+  <div class="grid2">
+    <div>
+      <ol class="steps">
+        <li>No rodapé do menu, clique em <strong>Valores ocultos → mostrar</strong>.</li>
+        <li>Digite <strong>a sua senha</strong> e clique em <strong>Mostrar</strong>.</li>
+        <li>O valor aparece na edição dos filmes por <strong>15 minutos</strong> (ajustável em Configurações). Para esconder antes, clique em <strong>Valores visíveis → ocultar</strong>.</li>
+      </ol>
+      <div class="box tip"><b class="t">Fica registrado</b>Cada vez que alguém mostra os valores — ou erra a senha tentando — o registro vai para <strong>Atividades</strong>.</div>
+    </div>
+    <figure><img src="img/06-olhinho.jpg" alt=""><figcaption>Pedido de senha do olhinho</figcaption></figure>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="page">
+  <div class="sec-head"><span class="num">10</span><h2>Usuários</h2></div>
+  <p>Fica em <strong>Configurações → Usuários</strong>.</p>
+  <ul>
+    <li><strong>Novo usuário</strong>: nome, e-mail e senha (mínimo 8 caracteres). Todo usuário entra como <strong>master</strong> e acessa tudo.</li>
+    <li><strong>Editar</strong>: muda nome, e-mail ou senha (deixe a senha em branco para manter).</li>
+    <li><strong>Minha conta</strong> (rodapé do menu): para trocar os seus próprios dados e senha.</li>
+    <li><strong>Excluir</strong>: a pessoa perde o acesso; o histórico dela continua em Atividades. Ninguém exclui a própria conta e sempre fica pelo menos um master.</li>
+    <li><strong>Atividades</strong> (em cada linha): mostra só o que aquele usuário fez.</li>
+  </ul>
+  <figure class="wide"><img src="img/14-usuarios.jpg" alt=""><figcaption>Usuários</figcaption></figure>
+</section>
+
+<!-- 11 -->
+<section>
+  <div class="sec-head"><span class="num">11</span><h2>Atividades</h2></div>
+  <p>Tudo o que os usuários fazem no painel fica registrado com <strong>quem</strong>, <strong>o quê</strong>, <strong>quando</strong>, <strong>IP</strong> e <strong>aparelho</strong>: entradas e saídas, senhas erradas, filmes cadastrados, editados ou excluídos, usuários, configurações e quem mostrou os valores. Filtre por usuário, por tipo de ação ou busque por texto. Os registros da versão anterior (clientes) continuam no histórico.</p>
+  <figure class="wide"><img src="img/15-atividades.jpg" alt=""><figcaption>Registro de atividades</figcaption></figure>
+</section>
+
+<!-- 12 -->
+<section>
+  <div class="sec-head"><span class="num">12</span><h2>Configurações</h2></div>
+  <ul>
+    <li><strong>Valores ocultos (olhinho)</strong>: por quanto tempo o valor fica visível depois da senha (5, 15, 30 ou 60 minutos).</li>
+    <li><strong>Minha conta</strong>: atalho para trocar seus dados e senha.</li>
+    <li><strong>Usuários e atividades</strong>: atalhos para cadastrar outros masters e ver o registro.</li>
+  </ul>
+  <figure class="wide"><img src="img/16-configuracoes.jpg" alt=""><figcaption>Configurações</figcaption></figure>
+</section>
+
+<!-- 13 -->
+<section>
+  <div class="sec-head"><span class="num">13</span><h2>Dúvidas frequentes</h2></div>
+  <dl class="faq">
+    <dt>Se eu mudar o título do filme, o link muda?</dt>
+    <dd>Não. O link é criado no cadastro e não muda mais. O robô do WhatsApp pode continuar com o mesmo link.</dd>
+    <dt>Quero trocar o vídeo por uma versão melhor.</dt>
+    <dd>Em <strong>Vídeos → Editar</strong>, envie o novo arquivo em <strong>Arquivo de vídeo</strong> e salve. O link continua o mesmo.</dd>
+    <dt>Abri o meu link e a visualização não aumentou.</dt>
+    <dd>É o esperado: quem está logado no painel não conta, nem a prévia do WhatsApp, e cada IP só conta uma vez por filme. Por isso, atualizar a página também não soma.</dd>
+    <dt>O filme não começa sozinho quando abro o link.</dt>
+    <dd>É assim em qualquer site: o navegador só libera som e tela cheia depois de um toque. A tela já abre com a capa e o botão grande; um toque e o filme começa.</dd>
+    <dt>A qualidade (HD) depende do quê?</dt>
+    <dd>Do arquivo enviado: o player mostra o vídeo na qualidade original. Cadastre em <strong>1080p ou 720p, MP4 (H.264)</strong>. Arquivos muito pesados demoram mais para começar em internet de celular.</dd>
+    <dt>Preciso carregar mais de 4 GB de filmes.</dt>
+    <dd>Divida em mais de um envio: carregue uma parte, clique em <strong>Cadastrar mais filmes</strong> e carregue o restante.</dd>
+    <dt>O envio de um filme falhou.</dt>
+    <dd>Use uma conexão estável e clique em carregar de novo; o envio é feito em partes e os outros filmes não são afetados. Se acontecer sempre, avise o suporte da John Code.</dd>
+    <dt>O vídeo não toca no navegador de quem recebeu.</dt>
+    <dd>Prefira <strong>MP4 (H.264)</strong>. Edite o filme e envie o arquivo nesse formato — o link continua o mesmo.</dd>
+    <dt>Esqueci minha senha.</dt>
+    <dd>Outro usuário master pode definir uma nova em <strong>Configurações → Usuários → Editar</strong>.</dd>
+    <dt>Quanto espaço os vídeos ocupam?</dt>
+    <dd>Em <strong>Vídeos</strong> aparece o espaço de cada um e o total; no Início, o total ao lado do número de vídeos. Os vídeos contam no espaço contratado da hospedagem.</dd>
+  </dl>
+</section>
+
+<!-- CRÉDITOS -->
+<div class="credits">
+  <div class="logo"><span class="mark"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.8v14.4a1 1 0 0 0 1.52.85l11.5-7.2a1 1 0 0 0 0-1.7L8.52 3.95A1 1 0 0 0 7 4.8Z"/></svg></span><span>link<span class="v">Video</span></span></div>
+  <p class="by">Desenvolvido por</p>
+  <p class="jc">John <span>Code</span></p>
+  <p class="site">Agência John Code · www.agenciajohncode.com.br</p>
+  <p class="note">Sistema, design e manual desenvolvidos pela John Code. © 2026 John Code — todos os direitos reservados.</p>
+</div>
+
+</body>
+</html>

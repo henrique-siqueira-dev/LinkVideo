@@ -1,0 +1,88 @@
+@import 'tailwindcss';
+
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../../app/Enums/*.php';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+
+    --color-brand-300: #fda4af;
+    --color-brand-400: #fb7185;
+    --color-brand-500: #f43f5e;
+    --color-brand-600: #e11d48;
+    --color-brand-700: #be123c;
+
+    --color-ink-950: #07070a;
+    --color-ink-900: #0e0e13;
+    --color-ink-850: #14141b;
+    --color-ink-800: #1b1b24;
+    --color-ink-700: #272733;
+    --color-ink-600: #383846;
+}
+
+@layer base {
+    html {
+        color-scheme: dark;
+    }
+
+    body {
+        @apply bg-ink-950 text-zinc-100 antialiased;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+/* Papéis de cor dos gráficos (paleta validada para o fundo escuro do painel, #0e0e13). */
+.viz-root {
+    --viz-series-1: #3987e5;
+    --viz-series-1-hover: #5598e7;
+    --viz-series-2: #199e70;
+    --viz-ink: #ffffff;
+    --viz-ink-secondary: #c3c2b7;
+    --viz-muted: #898781;
+    --viz-grid: #22222b;
+    --viz-axis: #383846;
+    --viz-tooltip-bg: #14141b;
+}
+
+@layer components {
+    .field-label {
+        @apply mb-1.5 block text-sm font-medium text-zinc-300;
+    }
+
+    .field-input {
+        @apply block w-full rounded-lg border border-ink-600 bg-ink-850 px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 transition outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30;
+    }
+
+    .field-error {
+        @apply mt-1.5 text-sm text-brand-400;
+    }
+
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition focus-visible:ring-2 focus-visible:ring-brand-500/60 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50;
+    }
+
+    .btn-primary {
+        @apply bg-brand-600 text-white shadow-lg shadow-brand-700/25 hover:bg-brand-500;
+    }
+
+    .btn-secondary {
+        @apply border border-ink-600 bg-ink-800 text-zinc-200 hover:border-ink-600 hover:bg-ink-700;
+    }
+
+    .btn-ghost {
+        @apply text-zinc-300 hover:bg-ink-800 hover:text-white;
+    }
+
+    .card {
+        @apply rounded-2xl border border-ink-700/70 bg-ink-900;
+    }
+
+    .rating-badge {
+        @apply inline-flex h-6 min-w-6 items-center justify-center rounded-md px-1.5 text-xs font-extrabold tracking-tight;
+    }
+}

@@ -1,0 +1,42 @@
+<?php
+
+return [
+
+    /*
+    | Usuários master criados pelo seeder. A senha inicial vem do .env
+    | (MASTER_PASSWORD) para não ficar gravada no código.
+    */
+    'masters' => [
+        ['name' => 'João Lucas', 'email' => 'joaolucasdev182@gmail.com'],
+        ['name' => 'Higor Salbonfim', 'email' => 'euhigorsalbonfim@gmail.com'],
+    ],
+
+    'master_password' => env('MASTER_PASSWORD'),
+
+    'uploads' => [
+        // Tamanho máximo do vídeo, em MB.
+        'video_max_mb' => (int) env('VIDEO_MAX_MB', 4096),
+
+        // Fila de cadastro: soma máxima dos vídeos enviados de uma vez, em MB.
+        'batch_max_mb' => (int) env('VIDEO_BATCH_MAX_MB', 4096),
+
+        // Tamanho máximo da capa, em KB.
+        'cover_max_kb' => (int) env('COVER_MAX_KB', 5120),
+
+        // Tamanho desejado de cada pedaço do upload em partes, em MB.
+        // É reduzido automaticamente se o upload_max_filesize do servidor for menor.
+        'chunk_mb' => (int) env('VIDEO_CHUNK_MB', 8),
+
+        'video_extensions' => ['mp4', 'm4v', 'webm', 'mov', 'ogv'],
+
+        'video_mimes' => [
+            'video/mp4',
+            'video/x-m4v',
+            'video/webm',
+            'video/quicktime',
+            'video/ogg',
+            'application/octet-stream',
+        ],
+    ],
+
+];
