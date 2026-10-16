@@ -7,6 +7,9 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
+    # Porta do nginx dentro do container (só na rede interna; o Coolify roteia o domínio para ela).
+    expose:
+      - "8080"
     environment:
       # Domínio do app; o Coolify encaminha para a porta 8080 do container.
       - SERVICE_FQDN_APP_8080
