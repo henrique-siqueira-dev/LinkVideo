@@ -47,7 +47,7 @@ class VideoController extends Controller
     {
         $data = $this->formData(new Video);
         $data['upload'] += [
-            'storeUrl' => route('videos.store'),
+            'storeUrl' => route('videos.store', absolute: false),
             'batchMaxBytes' => config('linkvideo.uploads.batch_max_mb') * 1024 * 1024,
             'batchMaxLabel' => Bytes::human(config('linkvideo.uploads.batch_max_mb') * 1024 * 1024),
         ];
@@ -198,14 +198,15 @@ class VideoController extends Controller
             'ratings' => AgeRating::cases(),
             'upload' => [
                 'driver' => NoxemClient::enabled() ? 'noxem' : 'local',
+                // Caminhos relativos: o navegador usa o mesmo esquema/domínio da página.
                 'noxem' => NoxemClient::enabled() ? [
-                    'startUrl' => route('uploads.noxem.start'),
+                    'startUrl' => route('uploads.noxem.start', absolute: false),
                     // "__TOKEN__" é trocado no navegador pelo token do envio.
-                    'signUrl' => route('uploads.noxem.sign', '__TOKEN__'),
-                    'completeUrl' => route('uploads.noxem.complete', '__TOKEN__'),
-                    'abortUrl' => route('uploads.noxem.abort', '__TOKEN__'),
+                    'signUrl' => route('uploads.noxem.sign', '__TOKEN__', absolute: false),
+                    'completeUrl' => route('uploads.noxem.complete', '__TOKEN__', absolute: false),
+                    'abortUrl' => route('uploads.noxem.abort', '__TOKEN__', absolute: false),
                 ] : null,
-                'url' => route('uploads.chunk'),
+                'url' => route('uploads.chunk', absolute: false),
                 'chunkSize' => ChunkedUpload::chunkSize(),
                 'maxBytes' => ChunkedUpload::maxBytes(),
                 'maxLabel' => Bytes::human(ChunkedUpload::maxBytes()),

@@ -21,6 +21,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // O Coolify pode entregar o domínio sem esquema (SERVICE_FQDN_APP = "linkvideo.exemplo.com").
+        // Sem "https://" o bloco abaixo não roda e os pedidos do upload saem como http:// (conteúdo misto).
+        $appUrl = trim((string) config('app.url'));
+        if ($appUrl !== '' && ! preg_match('#^[a-z][a-z0-9+.-]*://#i', $appUrl)) {
+            config(['app.url' => 'https://'.ltrim($appUrl, '/')]);
+        }
+
         // Na hospedagem o nginx atende em HTTPS e repassa ao PHP como HTTP.
         // Sem isto o Laravel gera links, CSS/JS e formulários com http:// e o
         // navegador bloqueia (conteúdo misto).
