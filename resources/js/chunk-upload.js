@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { uploadToNoxem } from './noxem-upload';
 
 const MAX_RETRIES = 3;
 
@@ -66,10 +67,14 @@ async function postWithRetry(url, form, signal, onProgress) {
 }
 
 /**
- * Envia o arquivo em partes para /uploads/chunk e devolve o token do upload concluído.
+ * Envia o arquivo em partes para /uploads/chunk (ou para a Noxem Cloud) e devolve o token do upload concluído.
  * onProgress recebe a porcentagem (0–99) conforme as partes sobem.
  */
-export async function uploadInChunks(file, { url, chunkSize }, onProgress, signal) {
+export async function uploadInChunks(file, config, onProgress, signal) {
+    // VIDEO_STORAGE=noxem: o arquivo vai do navegador direto para a Noxem Cloud.
+    if (config.driver === 'noxem') return uploadToNoxem(file, config, onProgress, signal);
+
+    const { url, chunkSize } = config;
     const uploadId = uuid();
     const total = Math.ceil(file.size / chunkSize);
 

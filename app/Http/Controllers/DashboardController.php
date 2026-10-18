@@ -6,19 +6,22 @@ use App\Enums\AgeRating;
 use App\Enums\Genre;
 use App\Models\Video;
 use App\Support\Bytes;
+use App\Support\Noxem\NoxemPlayback;
 use App\Support\Stats;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __invoke(Request $request): View
+    public function __invoke(Request $request, NoxemPlayback $noxem): View
     {
         $filters = $request->only(['q', 'genre', 'rating']);
         $isMaster = (bool) $request->user()->isMaster();
+        $videos = Video::query()->filter($filters)->latest()->paginate(24)->withQueryString();
+        $noxem->refreshMany($videos->getCollection());
 
         return view('dashboard', [
-            'videos' => Video::query()->filter($filters)->latest()->paginate(24)->withQueryString(),
+            'videos' => $videos,
             'filters' => $filters,
             'genres' => Genre::options(),
             'ratings' => AgeRating::options(),

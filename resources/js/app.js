@@ -5,6 +5,7 @@ import { copyButton } from './copy';
 import './money';
 import { barChart } from './charts';
 import { uploadQueue } from './upload-queue';
+import { recoverOnExpiry } from './media-recover';
 
 /**
  * Modal do player: qualquer botão "Assistir" chama $store.player.open(video).
@@ -20,6 +21,11 @@ Alpine.store('player', {
     close() {
         this.video = null;
         document.documentElement.classList.remove('overflow-hidden');
+    },
+
+    // x-init do <video>: renova a URL temporária da CDN se ela vencer no meio do filme.
+    recover(element) {
+        recoverOnExpiry(element);
     },
 });
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\FilmController;
 use App\Http\Controllers\FinanceVisibilityController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\NoxemUploadController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\VideoController;
@@ -35,6 +36,12 @@ Route::middleware('auth')->group(function () {
     Route::middleware('master')->group(function () {
         Route::resource('videos', VideoController::class)->except('show');
         Route::post('uploads/chunk', [UploadController::class, 'chunk'])->name('uploads.chunk');
+        Route::prefix('uploads/noxem')->name('uploads.noxem.')->group(function () {
+            Route::post('/', [NoxemUploadController::class, 'start'])->middleware('throttle:30,1')->name('start');
+            Route::post('{token}/parts', [NoxemUploadController::class, 'sign'])->name('sign');
+            Route::post('{token}/complete', [NoxemUploadController::class, 'complete'])->name('complete');
+            Route::post('{token}/abort', [NoxemUploadController::class, 'abort'])->name('abort');
+        });
 
         Route::post('valores/mostrar', [FinanceVisibilityController::class, 'show'])->middleware('throttle:20,1')->name('finance.show');
         Route::post('valores/ocultar', [FinanceVisibilityController::class, 'hide'])->name('finance.hide');

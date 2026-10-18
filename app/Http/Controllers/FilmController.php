@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Video;
 use App\Models\VideoDailyView;
 use App\Support\CoverImage;
+use App\Support\Noxem\NoxemPlayback;
 use App\Support\ProtectedMedia;
+use App\Support\VideoStream;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class FilmController extends Controller
 {
-    public function show(Request $request, string $slug): Response
+    public function show(Request $request, string $slug, NoxemPlayback $noxem): Response
     {
         $video = $this->find($slug);
 
@@ -26,6 +28,9 @@ class FilmController extends Controller
         if (! VideoDailyView::isBot($request) && ! $request->user()?->isMaster()) {
             VideoDailyView::record($video, $request);
         }
+
+        // Vídeo na Noxem ainda em preparo: confere se já ficou pronto antes de montar a página.
+        $noxem->refresh($video);
 
         $response = response()->view('film.watch', [
             'video' => $video,
@@ -39,15 +44,15 @@ class FilmController extends Controller
         return $response;
     }
 
-    public function stream(Request $request, string $slug): BinaryFileResponse
+    public function stream(Request $request, string $slug): Response
     {
         $video = $this->authorizeMedia($request, $slug);
 
-        return ProtectedMedia::file($video->video_path, [
+        return VideoStream::respond($video, fn () => ProtectedMedia::file($video->video_path, [
             'Content-Type' => $video->video_mime,
             'Content-Disposition' => 'inline',
             'Cache-Control' => 'private, no-store, no-transform',
-        ]);
+        ]));
     }
 
     public function cover(Request $request, string $slug): BinaryFileResponse

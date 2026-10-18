@@ -6,10 +6,16 @@
  * permitem os dois depois de um toque/clique da pessoa —, então um clique só:
  * toca com som, abre a tela cheia e, no celular, deita a tela se o vídeo for horizontal.
  */
-const stage = document.querySelector('[data-film]');
+import { recoverOnExpiry } from './media-recover';
 
-if (stage) {
-    const video = stage.querySelector('video');
+const stage = document.querySelector('[data-film]');
+const video = stage?.querySelector('video');
+
+// Sem <video> = filme ainda em preparo na Noxem Cloud (a página mostra só o aviso).
+if (stage && video) {
+    // Antes do listener de erro abaixo: renova a URL da CDN antes de mostrar a mensagem de erro.
+    recoverOnExpiry(video);
+
     const loading = stage.querySelector('[data-film-loading]');
     const start = stage.querySelector('[data-film-start]');
     const error = stage.querySelector('[data-film-error]');

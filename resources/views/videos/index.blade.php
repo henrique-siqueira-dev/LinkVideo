@@ -50,6 +50,17 @@
                                         <div class="min-w-0">
                                             <p class="max-w-64 truncate font-semibold text-white">{{ $video->title }}</p>
                                             <p class="max-w-64 truncate text-xs text-zinc-500">{{ $video->video_original_name }}</p>
+                                            @if ($video->noxem_video_id)
+                                                @php
+                                                    [$noxemLabel, $noxemClasses] = match ($video->noxem_status) {
+                                                        'ready' => ['Noxem Cloud', 'bg-emerald-500/15 text-emerald-300'],
+                                                        'failed' => ['Noxem · falhou', 'bg-brand-500/15 text-brand-300'],
+                                                        default => ['Noxem · preparando', 'bg-sky-500/15 text-sky-300'],
+                                                    };
+                                                @endphp
+                                                <span class="mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold {{ $noxemClasses }}"
+                                                      title="{{ $video->noxem_status === 'failed' ? $video->noxem_error : 'Vídeo guardado e entregue pela Noxem Cloud' }}">{{ $noxemLabel }}</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>

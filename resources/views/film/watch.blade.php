@@ -11,8 +11,25 @@
         {{-- A própria capa, desfocada, preenche as laterais. --}}
         <div class="absolute inset-0 scale-110 bg-cover bg-center opacity-40 blur-2xl" style="background-image: url('{{ $coverUrl }}')"></div>
 
-        {{-- Os controles (play, volume, tela cheia) aparecem depois do clique em assistir. --}}
-        <video class="absolute inset-0 size-full object-contain" playsinline preload="auto"
+        @if ($video->playbackState() !== 'ready')
+            {{-- Vídeo na Noxem Cloud ainda em preparo (ou que falhou): sem player, só o aviso por cima da capa. --}}
+            <img src="{{ $coverUrl }}" alt="" class="absolute inset-0 size-full object-contain">
+            <div class="absolute inset-0 grid place-items-center bg-black/50 p-4">
+                <div class="max-w-sm rounded-2xl bg-black/75 px-6 py-5 text-center backdrop-blur-sm">
+                    <x-logo />
+                    @if ($video->playbackState() === 'failed')
+                        <p class="mt-4 text-base font-semibold text-white">Este filme não está disponível no momento.</p>
+                        <p class="mt-1 text-sm text-zinc-300">Tente de novo mais tarde.</p>
+                    @else
+                        <p class="mt-4 text-base font-semibold text-white">Este filme está sendo preparado.</p>
+                        <p class="mt-1 text-sm text-zinc-300">Volte em alguns minutos e abra o link de novo.</p>
+                    @endif
+                </div>
+            </div>
+        @else
+        {{-- Os controles (play, volume, tela cheia) aparecem depois do clique em assistir.
+             Na Noxem Cloud só os metadados carregam antes do clique (o resto vem da CDN ao tocar). --}}
+        <video class="absolute inset-0 size-full object-contain" playsinline preload="{{ $video->noxem_video_id ? 'metadata' : 'auto' }}"
                controlslist="nodownload noremoteplayback" disableremoteplayback
                oncontextmenu="return false" draggable="false"
                poster="{{ $coverUrl }}" src="{{ $streamUrl }}">
@@ -49,6 +66,7 @@
         <p data-film-error hidden class="absolute inset-x-4 top-1/2 mx-auto max-w-sm -translate-y-1/2 rounded-xl bg-black/80 px-4 py-3 text-center text-sm text-zinc-200">
             Não foi possível carregar o vídeo. Verifique a internet e abra o link de novo.
         </p>
+        @endif
     </div>
 
     <main class="mx-auto w-full max-w-4xl flex-1 px-4 py-6 sm:px-6">

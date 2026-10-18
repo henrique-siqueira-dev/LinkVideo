@@ -50,6 +50,20 @@ Arquivos: `Dockerfile` (nginx + PHP-FPM 8.4, imagem `serversideup/php`), `docker
 - **Cloudflare com proxy (nuvem laranja)** na frente: o IP visto passa a ser o da Cloudflare, e o link público do filme (preso ao IP) pode falhar. Use o DNS sem proxy (nuvem cinza).
 - **Trazer os dados da hospedagem antiga**: importe o dump do MySQL no serviço `mysql` e copie `storage/app/private/` (videos, covers) para o volume `linkvideo-storage`. O `APP_KEY` pode ser o mesmo de antes ou novo (só invalida sessões e links assinados já abertos).
 
+## Streaming pela Noxem Cloud
+
+Com `VIDEO_STORAGE=noxem` os vídeos novos ficam na Noxem Cloud em vez do disco do servidor:
+
+- **Upload**: o navegador envia o arquivo em partes **direto** para o storage da Noxem, por URLs pré-assinadas. O servidor só abre, assina e fecha o envio (`app/Support/Noxem/NoxemUploads.php`, `resources/js/noxem-upload.js`). A API Key nunca vai para o navegador.
+- **Preparo**: depois do envio a Noxem gera o MP4 de reprodução. Até ficar pronto, o painel mostra "Noxem · preparando" e o link do filme mostra um aviso. O status é consultado ao abrir as telas.
+- **Reprodução**: o servidor confere o acesso (login ou link assinado) e redireciona o player para a URL temporária do MP4 na CDN (`app/Support/VideoStream.php`). Se a URL vencer no meio do filme, o player pede outra e continua de onde parou.
+- **Excluir ou trocar** o vídeo também apaga a cópia na Noxem.
+- Vídeos antigos continuam tocando do disco. Para levá-los para a Noxem: `php artisan linkvideo:noxem-migrar`. Quando aparecerem como "Noxem Cloud" na lista, rode `php artisan linkvideo:noxem-migrar --remover-locais` para liberar o disco.
+
+Variáveis: `VIDEO_STORAGE=noxem` e `NOXEM_API_KEY=sk_live_...` (chave com escopos `streaming.read`, `streaming.write` e `streaming.delete`). A chave fica só no `.env` ou no Coolify.
+
+Na Noxem, a URL da CDN é temporária, mas quem a copiar do navegador consegue baixar o vídeo enquanto ela vale (a API não faz proxy dos bytes).
+
 ## Publicar online (hospedagem compartilhada, FTP)
 
 O sistema abre em `https://www.agenciajohncode.com.br/sistemas/linkvideo`. O projeto fica **fora** do `www`; só a parte pública fica acessível. Nesta hospedagem o nginx entrega direto qualquer arquivo que esteja dentro do `www`, então **nunca envie a pasta do projeto inteira para lá**.

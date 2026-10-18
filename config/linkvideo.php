@@ -19,6 +19,13 @@ return [
     */
     'x_accel_mapping' => env('MEDIA_X_ACCEL_MAPPING'),
 
+    /*
+    | Onde ficam os vídeos novos: "local" (storage/app/private, entregue pelo
+    | próprio servidor) ou "noxem" (Noxem Cloud: upload direto do navegador para
+    | o storage e reprodução pela CDN deles). Vídeos já gravados continuam onde estão.
+    */
+    'video_storage' => env('VIDEO_STORAGE', 'local'),
+
     'uploads' => [
         // Tamanho máximo do vídeo, em MB.
         'video_max_mb' => (int) env('VIDEO_MAX_MB', 4096),

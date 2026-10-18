@@ -6,6 +6,7 @@ use App\Enums\AgeRating;
 use App\Enums\Genre;
 use App\Support\Bytes;
 use App\Support\CoverImage;
+use App\Support\Noxem\NoxemPlayback;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,6 +26,9 @@ class Video extends Model
         'price_cents',
         'cover_path',
         'video_path',
+        'noxem_video_id',
+        'noxem_status',
+        'noxem_error',
         'video_original_name',
         'video_mime',
         'video_size',
@@ -52,10 +56,11 @@ class Video extends Model
             $video->slug ??= static::uniqueSlug($video->title);
         });
 
-        // Ao excluir o registro, remove também os arquivos do disco.
+        // Ao excluir o registro, remove também os arquivos do disco e o vídeo na Noxem Cloud.
         static::deleted(function (Video $video) {
             Storage::disk('local')->delete(array_filter([$video->cover_path, $video->video_path]));
             CoverImage::forget($video->cover_path);
+            app(NoxemPlayback::class)->forget($video->noxem_video_id);
         });
     }
 
@@ -113,6 +118,26 @@ class Video extends Model
         return route('videos.stream', $this);
     }
 
+    /** Vídeo guardado na Noxem Cloud e já pronto para tocar pela CDN. */
+    public function isNoxemReady(): bool
+    {
+        return $this->noxem_video_id !== null && $this->noxem_status === 'ready';
+    }
+
+    /**
+     * Situação para o player: "ready" (toca), "processing" (Noxem ainda preparando)
+     * ou "failed". Enquanto a cópia da Noxem não fica pronta, um arquivo local (vídeo
+     * migrado) continua tocando.
+     */
+    public function playbackState(): string
+    {
+        if (! $this->noxem_video_id || $this->isNoxemReady() || $this->video_path) {
+            return 'ready';
+        }
+
+        return $this->noxem_status === 'failed' ? 'failed' : 'processing';
+    }
+
     public function formattedDuration(): ?string
     {
         if (! $this->duration) {
@@ -150,10 +175,10 @@ class Video extends Model
         }
     }
 
-    /** Espaço que o vídeo ocupa no servidor (arquivo de vídeo + capa). */
+    /** Espaço que o vídeo ocupa no servidor (arquivo de vídeo local + capa). Vídeo na Noxem: só a capa. */
     public function diskUsage(): int
     {
-        return $this->video_size + $this->coverSize();
+        return ($this->video_path ? $this->video_size : 0) + $this->coverSize();
     }
 
     public function formattedDiskUsage(): string
@@ -164,7 +189,7 @@ class Video extends Model
     /** Espaço total ocupado por todos os vídeos e capas. */
     public static function totalDiskUsage(): int
     {
-        return (int) static::sum('video_size')
+        return (int) static::whereNotNull('video_path')->sum('video_size')
             + static::query()->get(['cover_path'])->sum(fn (self $video) => $video->coverSize());
     }
 
@@ -184,6 +209,7 @@ class Video extends Model
             'src' => $this->streamUrl(),
             'mime' => $this->video_mime,
             'vertical' => (bool) $this->isVertical(),
+            'state' => $this->playbackState(),
         ];
     }
 }

@@ -28,6 +28,13 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // Streaming de vídeo (VIDEO_STORAGE=noxem). A chave só autoriza /streaming do workspace dela.
+    'noxem' => [
+        'url' => rtrim(env('NOXEM_API_URL', 'https://api.noxem.cloud/api'), '/'),
+        'key' => env('NOXEM_API_KEY'),
+        'timeout' => (int) env('NOXEM_TIMEOUT', 20),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

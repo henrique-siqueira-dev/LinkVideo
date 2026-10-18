@@ -44,6 +44,10 @@ services:
       - VIDEO_BATCH_MAX_MB=${VIDEO_BATCH_MAX_MB:-4096}
       - COVER_MAX_KB=${COVER_MAX_KB:-5120}
       - VIDEO_CHUNK_MB=${VIDEO_CHUNK_MB:-8}
+      # Streaming pela Noxem Cloud: VIDEO_STORAGE=noxem + a API Key (sk_live_...).
+      - VIDEO_STORAGE=${VIDEO_STORAGE:-local}
+      - NOXEM_API_KEY=${NOXEM_API_KEY:-}
+      - NOXEM_API_URL=${NOXEM_API_URL:-https://api.noxem.cloud/api}
     volumes:
       # Vídeos, capas e envios em andamento. NÃO apague este volume.
       - linkvideo-storage:/var/www/html/storage/app

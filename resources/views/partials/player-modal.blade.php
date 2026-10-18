@@ -26,13 +26,38 @@
 
             {{-- O <video> é recriado a cada abertura (x-if) e destruído ao fechar, interrompendo o download. --}}
             <div class="shrink-0 bg-black" :class="vertical ? 'flex justify-center md:flex-1' : 'aspect-video w-full'">
-                <video controls autoplay playsinline preload="metadata"
-                       controlslist="nodownload" oncontextmenu="return false"
-                       :class="vertical ? 'h-[65svh] w-auto max-w-full md:h-[min(85vh,860px)]' : 'size-full'"
-                       @loadedmetadata="vertical = $el.videoHeight > $el.videoWidth"
-                       :poster="$store.player.video.cover" :src="$store.player.video.src">
-                    Seu navegador não suporta a reprodução deste vídeo.
-                </video>
+                <template x-if="$store.player.video.state === 'ready'">
+                    <video controls autoplay playsinline preload="metadata"
+                           controlslist="nodownload" oncontextmenu="return false"
+                           :class="vertical ? 'h-[65svh] w-auto max-w-full md:h-[min(85vh,860px)]' : 'size-full'"
+                           @loadedmetadata="vertical = $el.videoHeight > $el.videoWidth"
+                           x-init="$store.player.recover($el)"
+                           :poster="$store.player.video.cover" :src="$store.player.video.src">
+                        Seu navegador não suporta a reprodução deste vídeo.
+                    </video>
+                </template>
+
+                {{-- Vídeo na Noxem Cloud ainda em preparo (ou que falhou): aviso no lugar do player. --}}
+                <template x-if="$store.player.video.state !== 'ready'">
+                    <div class="relative grid size-full min-h-56 place-items-center overflow-hidden">
+                        <img :src="$store.player.video.cover" alt="" class="absolute inset-0 size-full object-cover opacity-25 blur-md">
+                        <div class="relative mx-6 max-w-sm rounded-xl bg-black/70 px-5 py-4 text-center backdrop-blur-sm">
+                            <template x-if="$store.player.video.state === 'processing'">
+                                <div>
+                                    <span class="mx-auto block size-8 animate-spin rounded-full border-[3px] border-white/20 border-t-white"></span>
+                                    <p class="mt-3 text-sm font-semibold text-white">Preparando o vídeo…</p>
+                                    <p class="mt-1 text-xs text-zinc-300">A Noxem Cloud está processando o arquivo. Atualize a página em alguns minutos.</p>
+                                </div>
+                            </template>
+                            <template x-if="$store.player.video.state === 'failed'">
+                                <div>
+                                    <p class="text-sm font-semibold text-brand-300">Não foi possível preparar este vídeo.</p>
+                                    <p class="mt-1 text-xs text-zinc-300">Edite o vídeo e envie o arquivo de novo (de preferência MP4 H.264).</p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
             </div>
 
             <div class="overflow-y-auto p-5 sm:p-6" :class="vertical && 'md:w-80 md:shrink-0 md:pt-16'">
