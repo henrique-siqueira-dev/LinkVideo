@@ -28,7 +28,7 @@ Acesse **http://127.0.0.1:8010**. Banco MySQL do XAMPP `linkvideo` (`utf8mb4_uni
 /Applications/XAMPP/xamppfiles/bin/php artisan migrate:fresh --seed
 ```
 
-O seeder cria os masters com a senha de `MASTER_PASSWORD` do `.env`.
+O seeder cria os masters de `config/linkvideo.php` (hoje três) com a senha de `MASTER_PASSWORD` do `.env`. Ele pode rodar de novo sem problema: só cria quem falta e não muda a senha de quem já existe (`php artisan db:seed`).
 
 > O Apache do XAMPP roda como `daemon` e não consegue gravar em `storage/`; por isso o `artisan serve`.
 
@@ -39,11 +39,11 @@ Arquivos: `Dockerfile` (nginx + PHP-FPM 8.4, imagem `serversideup/php`), `docker
 1. No Coolify: **+ New Resource → Public/Private Repository**, aponte para este repositório e escolha **Build Pack: Docker Compose** (arquivo `docker-compose.yml`).
 2. Em **Environment Variables**, preencha:
    - `APP_KEY`: gere com `php artisan key:generate --show` (copie o `base64:...` inteiro);
-   - `MASTER_PASSWORD`: senha inicial dos dois masters;
+   - `MASTER_PASSWORD`: senha inicial dos masters (mantenha: a cada deploy o seeder cria quem ainda não existe);
    - as senhas do MySQL (`SERVICE_PASSWORD_MYSQL`, `SERVICE_PASSWORD_MYSQLROOT`) e o usuário (`SERVICE_USER_MYSQL`) o Coolify gera sozinho.
 3. Em **Domains** do serviço `app`, coloque o domínio com `https://` (ex.: `https://linkvideo.seudominio.com.br`). Ele vira o `APP_URL`.
 4. **Deploy**. A cada deploy o container roda as migrations e gera os caches sozinho.
-5. Só na primeira vez, no **Terminal** do serviço `app` no Coolify: `php artisan db:seed --force` (cria os masters). Depois disso pode apagar `MASTER_PASSWORD`.
+5. Os masters de `config/linkvideo.php` são criados sozinhos a cada deploy (migrations + seeder). Quem já existe mantém a senha; para incluir alguém, adicione o e-mail na lista e faça deploy.
 
 - **Vídeos e capas** ficam no volume `linkvideo-storage` (`storage/app`); o banco, em `linkvideo-mysql`. Não apague os volumes e inclua os dois no backup.
 - O PHP confere login/assinatura e o **nginx entrega o arquivo** (`X-Accel-Redirect`, variável `MEDIA_X_ACCEL_MAPPING`): o vídeo não prende um processo PHP enquanto toca.

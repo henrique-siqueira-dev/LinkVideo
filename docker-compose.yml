@@ -38,7 +38,7 @@ services:
       - QUEUE_CONNECTION=database
       - FILESYSTEM_DISK=local
       - MAIL_MAILER=log
-      # Só usada no primeiro "php artisan db:seed --force" (cria os masters).
+      # Senha inicial dos masters criados a cada deploy (os que já existem mantêm a senha deles).
       - MASTER_PASSWORD=${MASTER_PASSWORD:-}
       - VIDEO_MAX_MB=${VIDEO_MAX_MB:-4096}
       - VIDEO_BATCH_MAX_MB=${VIDEO_BATCH_MAX_MB:-4096}

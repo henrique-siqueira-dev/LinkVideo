@@ -55,6 +55,8 @@ ENV PHP_OPCACHE_ENABLE=1 \
     # O vídeo sai direto pelo nginx (X-Accel-Redirect) depois que o PHP confere o acesso.
     MEDIA_X_ACCEL_MAPPING=/var/www/html/storage/app/private/=/_linkvideo_media/ \
     LOG_CHANNEL=stderr \
-    # A cada deploy: migrations, storage:link e caches de config/rotas/views.
+    # A cada deploy: migrations (+ seeder), storage:link e caches de config/rotas/views.
     AUTORUN_ENABLED=true \
+    # Seeder a cada deploy: cria os masters de config/linkvideo.php que ainda não existem.
+    AUTORUN_LARAVEL_MIGRATION_SEED=true \
     AUTORUN_LARAVEL_MIGRATION_TIMEOUT=120

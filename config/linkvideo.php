@@ -3,12 +3,14 @@
 return [
 
     /*
-    | Usuários master criados pelo seeder. A senha inicial vem do .env
-    | (MASTER_PASSWORD) para não ficar gravada no código.
+    | Usuários master criados pelo seeder (no Docker ele roda a cada deploy: quem
+    | faltar é criado). A senha inicial vem do .env (MASTER_PASSWORD) para não
+    | ficar gravada no código; quem já existe mantém a senha que tem.
     */
     'masters' => [
         ['name' => 'João Lucas', 'email' => 'joaolucasdev182@gmail.com'],
         ['name' => 'Higor Salbonfim', 'email' => 'euhigorsalbonfim@gmail.com'],
+        ['name' => 'Guilherme Bonfim', 'email' => 'dentistaguilhermebonfim@gmail.com'],
     ],
 
     'master_password' => env('MASTER_PASSWORD'),
