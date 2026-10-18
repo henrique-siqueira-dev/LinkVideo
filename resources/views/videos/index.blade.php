@@ -15,11 +15,19 @@
 
     <div class="card mt-6 overflow-hidden">
         @if ($storage['count'] > 0)
-            <div class="flex items-center gap-2 border-b border-ink-700 bg-ink-850/60 px-4 py-2.5 text-xs text-zinc-400">
+            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-ink-700 bg-ink-850/60 px-4 py-2.5 text-xs text-zinc-400">
                 <x-icon name="database" class="size-4 text-brand-400" />
                 Espaço usado no servidor pelos vídeos e capas:
                 <strong class="text-zinc-200">{{ $storage['used'] }}</strong>
                 <span class="text-zinc-600">({{ $storage['count'] }} {{ $storage['count'] === 1 ? 'vídeo' : 'vídeos' }})</span>
+                @if ($storage['noxem'])
+                    <span class="text-ink-600">•</span>
+                    Na Noxem Cloud:
+                    <strong class="text-zinc-200">{{ $storage['noxem']['used'] }}</strong>
+                    @if ($storage['noxem']['cap'])
+                        <span class="text-zinc-600">de {{ $storage['noxem']['cap'] }}</span>
+                    @endif
+                @endif
             </div>
         @endif
 
@@ -66,9 +74,16 @@
                                 </td>
                                 <td class="hidden px-3 py-3 text-zinc-300 2xl:table-cell">{{ $video->genre->label() }}</td>
                                 <td class="hidden px-3 py-3 text-zinc-300 2xl:table-cell">{{ $video->formattedDuration() ?? '—' }}</td>
-                                <td class="px-3 py-3 whitespace-nowrap text-zinc-300" title="Vídeo {{ $video->formattedSize() }} + capa">
-                                    {{ $video->formattedDiskUsage() }}
-                                </td>
+                                @if ($video->noxemSize() > 0)
+                                    <td class="px-3 py-3 whitespace-nowrap text-zinc-300" title="Vídeo {{ $video->formattedSize() }} na Noxem Cloud + capa {{ $video->formattedDiskUsage() }} no servidor">
+                                        {{ $video->formattedSize() }}
+                                        <span class="block text-xs text-zinc-600">na Noxem</span>
+                                    </td>
+                                @else
+                                    <td class="px-3 py-3 whitespace-nowrap text-zinc-300" title="Vídeo {{ $video->formattedSize() }} + capa">
+                                        {{ $video->formattedDiskUsage() }}
+                                    </td>
+                                @endif
                                 <td class="hidden px-3 py-3 text-zinc-400 2xl:table-cell">
                                     {{ $video->created_at->format('d/m/Y') }}
                                     @if ($video->user)

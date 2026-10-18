@@ -75,7 +75,11 @@ class NoxemPlayback
             ? $remote['status']
             : $video->noxem_status;
 
+        // Se a API informar o tamanho guardado, ele vale mais que o do envio.
+        $size = (int) ($remote['sizeBytes'] ?? 0);
+
         $video->forceFill([
+            ...($size > 0 ? ['video_size' => $size] : []),
             'noxem_status' => $status,
             'noxem_error' => $status === 'failed' ? mb_substr((string) ($remote['failureReason'] ?? 'Falha no preparo do vídeo.'), 0, 500) : null,
         ])->saveQuietly();
@@ -95,6 +99,42 @@ class NoxemPlayback
         }
     }
 
+    /**
+     * Uso do contrato de streaming (GET /streaming/contract), guardado por 5 minutos.
+     * null quando a Noxem está desligada ou não respondeu: a tela segue sem o número.
+     *
+     * @return array{usedBytes: int, capBytes: int, videoCount: int}|null
+     */
+    public function usage(): ?array
+    {
+        if (! NoxemClient::enabled()) {
+            return null;
+        }
+
+        $usage = Cache::get('noxem-usage');
+
+        if ($usage === null) {
+            try {
+                $contract = $this->client->contract();
+            } catch (NoxemException $e) {
+                Log::warning("Noxem: não foi possível consultar o uso do contrato: {$e->getMessage()}");
+                // Evita repetir a consulta (e a espera) a cada abertura da tela enquanto a API falha.
+                Cache::put('noxem-usage', [], 60);
+
+                return null;
+            }
+
+            $usage = [
+                'usedBytes' => (int) ($contract['usage']['usedBytes'] ?? 0),
+                'capBytes' => (int) ($contract['usage']['capBytes'] ?? 0),
+                'videoCount' => (int) ($contract['usage']['videoCount'] ?? 0),
+            ];
+            Cache::put('noxem-usage', $usage, 300);
+        }
+
+        return $usage ?: null;
+    }
+
     /** Apaga o vídeo na Noxem sem travar a exclusão local se a API falhar. */
     public function forget(?string $noxemVideoId): void
     {
@@ -103,6 +143,7 @@ class NoxemPlayback
         }
 
         Cache::forget("noxem-playback:{$noxemVideoId}");
+        Cache::forget('noxem-usage');
 
         try {
             $this->client->deleteVideo($noxemVideoId);

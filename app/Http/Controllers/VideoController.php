@@ -38,6 +38,10 @@ class VideoController extends Controller
             'storage' => [
                 'used' => Bytes::human(Video::totalDiskUsage()),
                 'count' => Video::count(),
+                'noxem' => ($usage = $noxem->usage()) ? [
+                    'used' => Bytes::human($usage['usedBytes']),
+                    'cap' => $usage['capBytes'] > 0 ? Bytes::human($usage['capBytes']) : null,
+                ] : null,
             ],
         ]);
     }

@@ -186,6 +186,12 @@ class Video extends Model
         return Bytes::human($this->diskUsage());
     }
 
+    /** Tamanho do vídeo guardado na Noxem Cloud (0 quando o vídeo está no disco do servidor). */
+    public function noxemSize(): int
+    {
+        return $this->noxem_video_id && ! $this->video_path ? (int) $this->video_size : 0;
+    }
+
     /** Espaço total ocupado por todos os vídeos e capas. */
     public static function totalDiskUsage(): int
     {

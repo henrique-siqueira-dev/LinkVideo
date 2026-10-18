@@ -64,6 +64,7 @@ class NoxemStreamingTest extends TestCase
                 'POST /streaming/uploads/'.self::SESSION_ID.'/abort' => $ok(['success' => true]),
                 'PATCH /streaming/videos/'.self::VIDEO_ID => $ok(['id' => self::VIDEO_ID]),
                 'GET /streaming/videos/'.self::VIDEO_ID => $ok(['id' => self::VIDEO_ID, 'status' => $this->remoteStatus, 'failureReason' => null]),
+                'GET /streaming/contract' => $ok(['active' => true, 'usage' => ['usedBytes' => 2147483648, 'capBytes' => 107374182400, 'videoCount' => 1, 'openUploads' => 0]]),
                 'POST /streaming/videos/'.self::VIDEO_ID.'/playback' => $ok([
                     'url' => 'https://cdn.noxem.test/playback.mp4?X-Amz-Expires=7200',
                     'expiresAt' => now()->addHours(2)->toIso8601String(),
@@ -268,6 +269,15 @@ class NoxemStreamingTest extends TestCase
 
         $this->actingAs($this->master)->get('/videos')->assertOk()->assertSee('Noxem Cloud');
         $this->assertSame('ready', Video::sole()->noxem_status);
+    }
+
+    public function test_video_list_shows_size_on_noxem_and_contract_usage(): void
+    {
+        $this->noxemVideo(['video_size' => 3 * 1024 ** 3]);
+
+        $this->actingAs($this->master)->get('/videos')->assertOk()
+            ->assertSeeInOrder(['Na Noxem Cloud:', '2,0 GB', 'de 100,0 GB'])
+            ->assertSeeInOrder(['3,0 GB', 'na Noxem']);
     }
 
     public function test_migration_command_uploads_local_videos(): void
