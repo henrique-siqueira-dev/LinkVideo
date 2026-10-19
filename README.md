@@ -28,7 +28,7 @@ Acesse **http://127.0.0.1:8010**. Banco MySQL do XAMPP `linkvideo` (`utf8mb4_uni
 /Applications/XAMPP/xamppfiles/bin/php artisan migrate:fresh --seed
 ```
 
-O seeder cria os masters de `config/linkvideo.php` (hoje três) com a senha de `MASTER_PASSWORD` do `.env`. Ele pode rodar de novo sem problema: só cria quem falta e não muda a senha de quem já existe (`php artisan db:seed`).
+O seeder cria os masters de `config/linkvideo.php` (hoje três) com a senha de `MASTER_PASSWORD` do `.env`, e o administrador `admin@linkvideo.com` com a senha de `ADMIN_PASSWORD`. Ele pode rodar de novo sem problema: só cria quem falta e não muda a senha de quem já existe (`php artisan db:seed`).
 
 > O Apache do XAMPP roda como `daemon` e não consegue gravar em `storage/`; por isso o `artisan serve`.
 
@@ -40,6 +40,7 @@ Arquivos: `Dockerfile` (nginx + PHP-FPM 8.4, imagem `serversideup/php`), `docker
 2. Em **Environment Variables**, preencha:
    - `APP_KEY`: gere com `php artisan key:generate --show` (copie o `base64:...` inteiro);
    - `MASTER_PASSWORD`: senha inicial dos masters (mantenha: a cada deploy o seeder cria quem ainda não existe);
+   - `ADMIN_PASSWORD`: senha do administrador `admin@linkvideo.com` (master), criado a cada deploy se faltar;
    - as senhas do MySQL (`SERVICE_PASSWORD_MYSQL`, `SERVICE_PASSWORD_MYSQLROOT`) e o usuário (`SERVICE_USER_MYSQL`) o Coolify gera sozinho.
 3. Em **Domains** do serviço `app`, coloque o domínio com `https://` (ex.: `https://linkvideo.seudominio.com.br`). Ele vira o `APP_URL`.
 4. **Deploy**. A cada deploy o container roda as migrations e gera os caches sozinho.

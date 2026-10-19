@@ -40,6 +40,8 @@ services:
       - MAIL_MAILER=log
       # Senha inicial dos masters criados a cada deploy (os que já existem mantêm a senha deles).
       - MASTER_PASSWORD=${MASTER_PASSWORD:-}
+      # Senha do admin@linkvideo.com, criado a cada deploy se ainda não existir.
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
       - VIDEO_MAX_MB=${VIDEO_MAX_MB:-4096}
       - VIDEO_BATCH_MAX_MB=${VIDEO_BATCH_MAX_MB:-4096}
       - COVER_MAX_KB=${COVER_MAX_KB:-5120}

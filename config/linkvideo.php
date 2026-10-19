@@ -16,6 +16,14 @@ return [
     'master_password' => env('MASTER_PASSWORD'),
 
     /*
+    | Administrador fixo, também master e criado a cada deploy se faltar. Tem
+    | senha própria (ADMIN_PASSWORD), definida só no .env / Coolify.
+    */
+    'admin' => ['name' => 'Admin', 'email' => 'admin@linkvideo.com'],
+
+    'admin_password' => env('ADMIN_PASSWORD'),
+
+    /*
     | No Docker o nginx entrega vídeos e capas (X-Accel-Redirect) depois que o PHP
     | confere o acesso. Formato "pasta-no-disco/=/local-interno/". Vazio: o PHP entrega.
     */
